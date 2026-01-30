@@ -1,3 +1,5 @@
+#include "push_swap.h"
+
 int is_valid_number(char *str)
 {
 	int	i;
@@ -6,11 +8,11 @@ int is_valid_number(char *str)
 
 	if (str[i] == '-' || str[i] == '+')
 		i++;
-	if (!str)
+	if (!str[i])
 		return (0);
 	while(str[i])
 	{
-		if (str[i] >= '0' && str[i] <= '0')
+		if (str[i] < '0' || str[i] > '9')
 			return (0);
 		i++;
 	}
@@ -27,7 +29,7 @@ int	ft_isdigit (int c)
 	return (c >= '0' && c <= '9');
 }
 
-long	ft_atoil(char *str)
+long	ft_atol(char *str)
 {
 	long result;
 	int sign;
@@ -46,7 +48,7 @@ long	ft_atoil(char *str)
 			sign = -1;
 		i++;
 	}
-	while(ft_isdigit(str[1]))
+	while(ft_isdigit(str[i]))
 	{
 		result = result * 10 + (str[i] - '0');
 		i++;
@@ -54,7 +56,7 @@ long	ft_atoil(char *str)
 	return (sign * result);
 }
 
-int has_dublicate(t_stack *stack, int num)
+int has_duplicate(t_stack *stack, int num)
 {
 	t_stack *current;
 
@@ -69,3 +71,26 @@ int has_dublicate(t_stack *stack, int num)
 	return (0);
 }
 
+t_stack *parse_args(int argc, char **argv) 
+{
+    t_stack *stack;
+    long    num;
+    int     i;
+
+    stack = NULL;
+    i = 1;
+
+    while (i < argc)
+    {
+        if (!is_valid_number(argv[i]))
+            error_exit("Error\n", stack, NULL);
+        num = ft_atol(argv[i]);
+        if (num > INT_MAX || num < INT_MIN)
+            error_exit("Error\n", stack, NULL);
+        if (has_duplicate(stack, (int)num))
+            error_exit("Error\n", stack, NULL);
+        stack_add_bottom(&stack, (int)num);
+        i++;
+    }
+    return (stack); 
+}
